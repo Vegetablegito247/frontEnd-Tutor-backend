@@ -17,13 +17,13 @@ class signupSerializer(serializers.ModelSerializer):
         model = FrontendUsers
         fields = ["email", "username", "contact","password"]
 
-    def validate(self, data):
-        check = FrontendUsers.objects.filter(email= data['email']).first()
+    # def validate(self, data):
+    #     check = FrontendUsers.objects.filter(email= data['email']).first()
 
-        if check is not None:
-            raise serializers.ValidationError('Email already exist')
+    #     if check is not None:
+    #         raise serializers.ValidationError('Email already exist')
         
-        return(data)
+    #     return(data, check)
     
     def create(self, data):
         pwd = data['password']
@@ -40,6 +40,11 @@ def Signup(request):
         serializedata = signupSerializer(data= request.data)
 
         if serializedata.is_valid():
+            email = serializedata.validated_data.get('email')
+            # checking if email exists
+            if FrontendUsers.objects.filter(email=email).exists():
+                return Response({"message": 'Email already exists'})
+            # if email is unique proceed with registration
             serializedata.save()
             return Response(data={"message":'Signup successful', "info": request.data})
         else:
