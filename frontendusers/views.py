@@ -7,6 +7,7 @@ from django.db import models
 
 # Create your views here.
 
+
 class signupSerializer(serializers.ModelSerializer):
     email = serializers.EmailField()
     username = serializers.CharField()
@@ -15,16 +16,16 @@ class signupSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = FrontendUsers
-        fields = ["email", "username", "contact","password"]
+        fields = ["email", "username", "contact", "password"]
 
     # def validate(self, data):
     #     check = FrontendUsers.objects.filter(email= data['email']).first()
 
     #     if check is not None:
     #         raise serializers.ValidationError('Email already exist')
-        
+
     #     return(data, check)
-    
+
     def create(self, data):
         pwd = data['password']
         new_pwd = make_password(pwd)
@@ -33,11 +34,12 @@ class signupSerializer(serializers.ModelSerializer):
         new_user = FrontendUsers.objects.create(**data)
 
         return new_user
-    
+
+
 @api_view(['POST'])
 def Signup(request):
     try:
-        serializedata = signupSerializer(data= request.data)
+        serializedata = signupSerializer(data=request.data)
 
         if serializedata.is_valid():
             email = serializedata.validated_data.get('email')
@@ -46,29 +48,26 @@ def Signup(request):
                 return Response({"message": 'Email already exists'})
             # if email is unique proceed with registration
             serializedata.save()
-            return Response(data={"message":'Signup successful', "info": request.data})
+            return Response(data={"message": 'Signup successful', "info": request.data})
         else:
             return Response(serializedata.errors)
 
     except BaseException as e:
         return Response(str(e))
-        
-    
+
+
 class loginSerializer(serializers.Serializer):
     email = serializers.EmailField()
     password = serializers.CharField()
 
     def logUser(self, data):
-        user = FrontendUsers.objects.filter(email = data['email']).first()
-
-        
+        user = FrontendUsers.objects.filter(email=data['email']).first()
 
         if user is None:
             return 'Invalid email'
         else:
             encpwd = getattr(user, 'password')
             op = data['password']
-            
 
             check = check_password(op, encpwd)
             if check:
@@ -81,7 +80,8 @@ class loginSerializer(serializers.Serializer):
                 return data
             else:
                 return 'Invalid Password'
-            
+
+
 @api_view(['POST'])
 def Login(request):
     try:
@@ -91,15 +91,15 @@ def Login(request):
             return Response(data="Password field is empty")
         elif request.data['email'] == "" and request.data['password'] == "":
             return Response(data="Both email and password fields are empty")
-        else: 
-            serializedata = loginSerializer(data = request.data)
+        else:
+            serializedata = loginSerializer(data=request.data)
             if serializedata.is_valid():
-                 result = serializedata.logUser(serializedata.data)
-                 print(result)
-                 return Response(result)
-                
+                result = serializedata.logUser(serializedata.data)
+                print(result)
+                return Response(result)
+
             else:
-                return Response(serializedata.errors)        
+                return Response(serializedata.errors)
     except BaseException as e:
         return Response(str(e))
 
@@ -111,35 +111,38 @@ class updateSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = FrontendUsers
-        fields = '__all__' 
+        fields = '__all__'
+
 
 @api_view(['PATCH'])
 def UpdateAccount(request, email):
     try:
-        user = FrontendUsers.objects.filter(email = email).first()
+        user = FrontendUsers.objects.filter(email=email).first()
 
         if user is None:
             return Response('No account found')
         else:
-            serializedata = updateSerializer(instance= user, data= request.data, partial=True)
+            serializedata = updateSerializer(
+                instance=user, data=request.data, partial=True)
             if serializedata.is_valid():
                 serializedata.save()
-                return Response(data= serializedata.data)
+                return Response(data=serializedata.data)
             else:
                 return Response(serializedata.errors)
     except BaseException as e:
         return Response(str(e))
 
+
 @api_view(['DELETE'])
 def DeleteAccount(request, email):
     try:
-        user = FrontendUsers.objects.filter(email = email).first()
+        user = FrontendUsers.objects.filter(email=email).first()
 
         if user is None:
             return Response('Account not found')
         else:
             user.delete()
             return Response('Account deleted successfully')
-        
-    except BaseException as e :
+
+    except BaseException as e:
         return Response(str(e))

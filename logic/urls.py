@@ -21,4 +21,5 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('frontendusers.urls')),
     path('', include('frontendvideos.urls')),
+    path('', include('frontendsubscriber.urls')),
 ]
