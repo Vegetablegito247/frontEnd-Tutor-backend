@@ -6,10 +6,10 @@ from rest_framework import serializers
 
 # Create your views here.
 
-class HtmlUploadSerializer(serializers.Serializer):
-    class meta:
+class HtmlUploadSerializer(serializers.ModelSerializer):
+    class Meta:
         model = HtmlTutorial
-        field = '__all__'
+        fields = '__all__'
 
 @api_view(['GET'])
 def UploadHtmlVideo(request):
@@ -18,10 +18,10 @@ def UploadHtmlVideo(request):
 
     return Response(serializerData.data)
 
-class CssUploadSerializer(serializers.Serializer):
-    class meta:
+class CssUploadSerializer(serializers.ModelSerializer):
+    class Meta:
         model = CssTutorial
-        field = '__all__'
+        fields = '__all__'
 
 @api_view(['GET'])
 def UploadCssVideo(request):
@@ -30,10 +30,10 @@ def UploadCssVideo(request):
 
     return Response(serializerData.data)
 
-class BootstrapUploadSerializer(serializers.Serializer):
-    class meta:
+class BootstrapUploadSerializer(serializers.ModelSerializer):
+    class Meta:
         model = BootstrapTutorial
-        field = '__all__'
+        fields = '__all__'
 
 @api_view(['GET'])
 def UploadBootstrapVideo(request):
@@ -42,10 +42,10 @@ def UploadBootstrapVideo(request):
 
     return Response(serializerData.data)
 
-class JavascriptUploadSerializer(serializers.Serializer):
-    class meta:
+class JavascriptUploadSerializer(serializers.ModelSerializer):
+    class Meta:
         model = JavaScriptTutorial
-        field = '__all__'
+        fields = '__all__'
 
 @api_view(['GET'])
 def UploadJavascriptVideo(request):
@@ -54,10 +54,10 @@ def UploadJavascriptVideo(request):
 
     return Response(serializerData.data)
 
-class ReactUploadSerializer(serializers.Serializer):
-    class meta:
+class ReactUploadSerializer(serializers.ModelSerializer):
+    class Meta:
         model = ReactTutorial
-        field = '__all__'
+        fields = '__all__'
 
 @api_view(['GET'])
 def UploadReactVideo(request):
