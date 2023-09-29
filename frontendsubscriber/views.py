@@ -9,12 +9,18 @@ class SubscriberSerializer(serializers.ModelSerializer):
         model = Subscriber
         fields = '__all__'
 
-@api_view(['POST'])
+@api_view(['POST', 'GET'])
 def GetSubscriber(request):
-    serializeData = SubscriberSerializer(data = request.data)
+    if request.method == 'POST':
+        serializeData = SubscriberSerializer(data = request.data)
 
-    if serializeData.is_valid():
-        serializeData.save()
-        return Response('success')
-    else:
-        return Response(serializeData.errors)
+        if serializeData.is_valid():
+            serializeData.save()
+            return Response('success')
+        else:
+            return Response(serializeData.errors)
+    elif request.method == 'GET':
+        sub = Subscriber.objects.all()
+        serializerdata = SubscriberSerializer(sub, many=True)
+
+        return Response(serializerdata.data)
